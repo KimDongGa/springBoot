@@ -1,0 +1,90 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'org.asciidoctor.convert' version '1.5.8'
+    id 'java'
+    //id 'org.sonarqube' version ''
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+
+	compile("org.projectlombok:lombok")
+	compile("com.querydsl:querydsl-jpa")
+	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+	annotationProcessor("com.querydsl:querydsl-jpa")
+
+	//compile project(':task')
+	//compile - mabatis, corre, security, mvc-rest, autoconfigure, batch
+
+	//compile "org.apache.logging.log4j:log4j-to-slf4j:2.17.1"
+    //compile "org.apache.logging.log4j:log4j-api:2.17.1"
+    //compile "ch.qos.logback:logback-core:1.2.9"
+    //compile "ch.qos.logback:logback-classic:1.2.9"
+    compileOnly "org.springframework.boot:spring-boot-devtools"
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.22'
+	compile 'io.springfox:springfox-swagger2:2.9.2'
+	compile 'io.springfox:springfox-swagger-ui:2.9.2'
+
+    //compile "org.springframework.boot:spring-boot-starter-aop"
+    //compile group: 'org.reflections', name: 'reflections', version : '0.9.11'
+
+	//developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation group: 'co.privacyone.sdk', name: 'restapi', version: '2.1.0'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-web-services'
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.session:spring-session-core'
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	implementation group: 'org.springframework', name: 'spring-core', version: '5.3.6'
+	implementation group: 'org.springframework', name: 'spring-webmvc', version: '5.3.17'
+	implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.5'
+	implementation group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.1.1.RELEASE'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.batch:spring-batch-test'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'org.springframework.security:spring-security-test'
+	//integrationTestAnnotationProcessor("org.projectlombok:lombok")
+
+	//runtime project(':task')
+}
+
+//test {
+//	useJUnitPlatform()
+//}
+tasks.named('test') {
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+task shadowJar {
+	dependsOn 'jar'
+    doLast {
+        delete fileTree(dir: "build", exclude: "libs")
+        delete fileTree(dir: "build/libs", exclude: "*.jar")
+    }
+}
