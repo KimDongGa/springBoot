@@ -7,7 +7,6 @@ spring :
   profiles:
     active: local
     
-
 mybatis:
   configuration:
     jdbc-type-for-null: "NULL"

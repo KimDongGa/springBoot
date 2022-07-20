@@ -15,6 +15,7 @@ repositories {
 	jcenter()
 }
 
+
 ext {
 	set('snippetsDir', file("build/generated-snippets"))
 }
